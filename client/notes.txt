@@ -1,0 +1,3 @@
+formik lib
+---------- 
+npm i formik react-hot-toast (react-hot-toast - used to display all eroor and successfull messages)
