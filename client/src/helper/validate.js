@@ -50,3 +50,31 @@ export async function resetPasswordValidation(values){
         errors.exist = toast.error("Password didn't match...!")
     }
 }
+
+//validate register form
+
+export async function registerValidation(values){
+    const errors= usernameVerify({},values);
+    passwordVerify(errors,values);
+    emailVerify(errors,values)
+    return errors
+
+}
+
+//validate email
+
+function emailVerify(error={},values){
+    if (!values.email){
+        error.email=toast.error('Email Required...!')
+    }else if(values.email.includes(" ")){
+        error.email = toast.error('Wrong email format')
+    }else if(!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/i.test(values.email)){
+        error.email = toast.error("Invalid email address...!")
+    }
+    return error
+}
+
+export async function profileValidation(values){
+    const error = emailVerify({},values)
+    return error
+}
