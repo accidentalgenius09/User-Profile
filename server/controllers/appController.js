@@ -31,7 +31,7 @@ async function register(req, res) {
       return res.status(400).json({error: "Please use a unique mobile"})
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hashSync(password, 10);
 
     const newUser = new User({
       username,
@@ -53,15 +53,32 @@ async function register(req, res) {
   }
 }
 
+// middleware for verify user
+async function verifyUser(req,res,next){
+  try {
+
+    const {username} = req.method =="GET" ? req.query : req.body
+    let exist = User.findOne({username})
+    if(!exist){
+      res.status(404).send({error:"User not found"})
+    }else{
+      next()
+    }
+    
+  } catch (error) {
+    res.status(404).send({error:"Authentication error"})
+  }
+}
+
 
 async function login(req, res) {
   
   const {username,password}=req.body
   try {
-    const existUser = User.findOne({username})
+    const existUser = await User.findOne({username})
     if(existUser){
 
-      const encryptedPassword = bcrypt.compare(password,existUser.password)
+      const encryptedPassword = await bcrypt.compare(password,existUser.password)
       if(!encryptedPassword){
         return res.status(400).json({error:"Incorrect Password"})
       }else{
@@ -90,7 +107,24 @@ async function login(req, res) {
 
 
 async function getUser(req, res) {
-  res.json("getuser route");
+    const {username}=req.params
+    try {
+      if(!username){
+        res.status(500).send({error : "Invalid username"})
+      }else{
+        const existUser = await User.findOne({username})
+        if(!existUser){
+          res.status(501).send({error:"Couldn't find the user"})
+        }
+        else{
+          const {password,...rest} = Object.assign({},existUser.toJSON())
+          res.status(201).send(rest)
+        }
+      }
+      
+    } catch (error) {
+      res.status(404).send({error:"Cannot find user data"})
+    }
 }
 
 async function updateUser(req, res) {
@@ -112,4 +146,5 @@ module.exports = {
   updateUser,
   createResetSession,
   resetpassword,
+  verifyUser,
 };

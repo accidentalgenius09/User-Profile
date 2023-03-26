@@ -7,6 +7,7 @@ const {
     updateUser,
     createResetSession,
     resetpassword,
+    verifyUser,
   } = require('../controllers/appController');
 
 //GET methods
@@ -21,7 +22,7 @@ router.route("/createResetSession").get(createResetSession)
 router.route('/register').post(register)
 router.route('/registerMail').post()
 router.route('/authenticate').post((req,res)=>res.end())
-router.route('/login').post(login)
+router.route('/login').post(verifyUser,login)
 
 // PUT method
 router.route('/updateuser').put(updateUser)
