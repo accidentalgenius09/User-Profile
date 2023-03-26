@@ -123,12 +123,25 @@ async function getUser(req, res) {
       }
       
     } catch (error) {
-      res.status(404).send({error:"Cannot find user data"})
+      res.status(404).send({error})
     }
 }
 
 async function updateUser(req, res) {
-  res.json("updateUser route");
+  const {userId} = req.user
+
+  try {
+
+    if(userId){
+      const body = req.body
+
+      await User.updateOne({_id:userId},body)
+      res.status(201).send({message:"Record Updated"})
+    }
+    
+  } catch (error) {
+    res.status(401).send({error})
+  }
 }
 
 async function createResetSession(req, res) {
