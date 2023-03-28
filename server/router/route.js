@@ -6,16 +6,18 @@ const {
   getUser,
   updateUser,
   createResetSession,
-  resetpassword,
+  resetPassword,
   verifyUser,
+  generateOTP,
+  verifyOTP
 } = require("../controllers/appController");
-const {Auth} = require('../middleware/auth')
+const {Auth,localVariables} = require('../middleware/auth')
 
 //GET methods
 
 router.route("/user/:username").get(getUser);
-// router.route("/generateOTP").get(generateOTP)
-// router.route("/verifyOTP").get(verifyOTP)
+router.route("/generateOTP").get(verifyUser,localVariables,generateOTP)
+router.route("/verifyOTP").get(verifyOTP)
 router.route("/createResetSession").get(createResetSession);
 
 //POST methods
@@ -26,7 +28,7 @@ router.route("/login").post(verifyUser, login);
 
 // PUT method
 router.route("/updateuser").put(Auth, updateUser);
-// router.route('/resetpassword').put(resetPassword)
+router.route('/resetPassword').put(verifyUser, resetPassword)
 
 module.exports = {
   router,

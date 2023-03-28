@@ -16,6 +16,15 @@ async function Auth(req,res,next){
     }
 }
 
+async function localVariables(req,res,next){
+    req.app.locals = {
+        OTP : false,
+        resetSession : false
+    }
+    next()
+}
+
 module.exports={
-    Auth
+    Auth,
+    localVariables,
 }
